@@ -1,0 +1,9 @@
+﻿example,size,shape,colour,surface,thickness,tumour
+1,small,circular,dark,smooth,thick,yes
+2,big,elliptical,light,smooth,thin,no
+3,big,circular,light,rough,thick,yes
+4,big,elliptical,light,rough,thick,no
+5,big,elliptical,dark,smooth,thin,no
+6,big,circular,dark,smooth,thick,yes
+7,small,circular,light,smooth,thick,no
+8,big,elliptical,light,rough,thin,no
