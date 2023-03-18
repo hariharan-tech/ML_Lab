@@ -16,7 +16,7 @@ A repository for storing the programming component of the Machine learning cours
 ## Bivariate Guassian distribution visualizations
 
 - Shifting mean
-![Shifting Mean](https://github.com/hariharan-tech/ML_Lab/blob/master/05_data_viz/shifting_mean.gif)
+![Shifting Mean](https://github.com/hariharan-tech/ML_Lab/blob/master/05_data_viz/shifting_mean_compressed.gif)
 
 - Changing the Covariance matrix
 ![Shifting Covariance](https://github.com/hariharan-tech/ML_Lab/blob/master/05_data_viz/shifting_covariance.gif)
