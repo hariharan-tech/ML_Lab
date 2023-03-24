@@ -26,7 +26,6 @@ extern float minkowski2d(struct Point2D a,struct Point2D b,float pow){
   return powf(powf((a.x-b.x),pow) + powf((a.y-b.y),pow),1/pow);
 }
 
-
 /* 
     2-D function to calculate Supremum distance
 */
