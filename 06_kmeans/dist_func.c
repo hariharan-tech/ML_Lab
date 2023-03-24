@@ -1,4 +1,4 @@
-//#include <stdio.h>
+// #include <stdio.h>
 #include <math.h>
 
 struct Point2D{
@@ -21,9 +21,10 @@ extern float manhattan2d(struct Point2D a,struct Point2D b){
 
 /* 
     2-D function to calculate Minkowski distance
+    As of now this is not used
 */
-extern float minkowski2d(struct Point2D a,struct Point2D b,float pow){
-  return powf(powf((a.x-b.x),pow) + powf((a.y-b.y),pow),1/pow);
+extern float minkowski2d(struct Point2D a,struct Point2D b,float powval){
+  return powf(powf((a.x-b.x),powval) + powf((a.y-b.y),powval),(float)(1/powval));
 }
 
 /* 

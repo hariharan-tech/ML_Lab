@@ -1,5 +1,6 @@
 import ctypes
 import pandas as pd
+from random import randint
 
 # Configurations
 # For importing the struct defined in dist_func.so
@@ -15,11 +16,14 @@ class Point2D(ctypes.Structure):
 # Load the source object file
 lib = ctypes.CDLL("./dist_func.so")
 
+def minkowski2d(point1,point2,p):
+    return abs(((point1.x-point2.x)**(p)+(point1.y-point2.y)**(p))**(1/p))
+
 # The functions defined are mapped
 funcs_defined = {
     "Euclidean":lib.euclidean2d,
     "Manhattan":lib.manhattan2d,
-    "Minkowski":lib.minkowski2d,
+    "Minkowski":minkowski2d,
     "Supremum":lib.supremum2d,
     "Cosine Similarity":lib.cossim2d
     }
@@ -39,6 +43,7 @@ for i in funcs_defined:
 class KMeans:
     points = list()
     centroids = list()
+    cent_list = list()
     dist_type = ""
 
     def __init__(self,pd_df,K_value,dist_type):
@@ -48,6 +53,7 @@ class KMeans:
                 - k_value to indicate the number of clusters
                 - dist_type to indicate the type of distance calculation
                     - Built-in types are ["Euclidean","Manhattan","Minkowski","Supremum","Cosine Similarity"]
+            NOTE: As of now Minkowski distance is calculated by a Python function
 
         '''
 
@@ -55,29 +61,63 @@ class KMeans:
             raise Exception("Undefined distance function was specified")
         self.dist_type = dist_type
         self.k_value = K_value
+        self.df = pd_df
         for _, row in pd_df.iterrows():
             self.points.append(Point2D(row["X1"],row["X2"]))
             # print(self.points[-1].x,self.points[-1].y)
             # print(self.points[-1].return_pts())
             # print()
     
-    def set_centroids(self,cent_list):
+    def set_centroids(self,**kwargs):
         '''
-            Set the K - centroids from a given index of the input data from cent_list (input)
+            INPUT:
+                - 2 Ways of providing the centroid points:
+                    - Just calling the function would randomly generate take in centroid points
+                    - Instead you can pass in the centroid as index from the dataset, it will 
+                        assign those points as centroid
+            
+            OUTPUT:
+                - A list of the index of Point2D values selected from the dataframe given
         '''
 
-        if len(cent_list) != self.k_value:
-            raise Exception("Given list of centroids doesn't match with the K values")
-        for i in cent_list:
-            self.centroids.append(self.points[i])
+        self.centroids = list()
+        if len(kwargs.items()):
+            cent_list = kwargs["cent_list"]
+            if len(cent_list) != self.k_value:
+                raise Exception("Given list of centroids doesn't match with the K values")
+            for i in cent_list:
+                self.centroids.append(self.points[i])
+        
+        else:
+            cent_list = list()
+            while len(cent_list)!=self.k_value:
+                cent_list.append(randint(0,len(self.points)-1))
+                cent_list = list(set(cent_list))
+            cent_list.sort()
+            for i in cent_list:
+                self.centroids.append(self.points[i])
+        
+        self.cent_list = cent_list
+        return cent_list
 
-    def get_dist(self,point1,point2):
+
+
+    def get_dist(self,point1,point2,**kwargs):
         '''
             Calculates the distance (of defined type) between 2 points and returns it
+            In case of Minkowski distance, you have to pass a keyword argument name p
         '''
+        if self.dist_type!="Minkowski":
+            return funcs_defined[self.dist_type](point1,point2)
+        elif self.dist_type=="Minkowski" and len(kwargs)!=0:
+            # Getting minkowski p value
+            return funcs_defined["Minkowski"](point1,point2,kwargs["p"])
+        else:
+            raise Exception("Use the function properly!")
 
-        return funcs_defined[self.dist_type](point1,point2)
 
+    def Kmeans_cluster():
+        pass
 
 '''
 
