@@ -42,9 +42,11 @@ for i in funcs_defined:
 # KMeans Class
 class KMeans:
     points = list()
+    cluster = list()
     centroids = list()
     cent_list = list()
     dist_type = ""
+    p = 2
 
     def __init__(self,pd_df,K_value,dist_type):
         '''
@@ -53,21 +55,29 @@ class KMeans:
                 - k_value to indicate the number of clusters
                 - dist_type to indicate the type of distance calculation
                     - Built-in types are ["Euclidean","Manhattan","Minkowski","Supremum","Cosine Similarity"]
-            NOTE: As of now Minkowski distance is calculated by a Python function
+            
+            NOTE: 
+                - Minkowski distance is calculated by a Python function
+                - Cosine similarity doesn't work
 
         '''
 
-        if dist_type not in funcs_defined:
+        if dist_type not in funcs_defined or dist_type=="Cosine Similarity":
             raise Exception("Undefined distance function was specified")
         self.dist_type = dist_type
         self.k_value = K_value
-        self.df = pd_df
         for _, row in pd_df.iterrows():
             self.points.append(Point2D(row["X1"],row["X2"]))
             # print(self.points[-1].x,self.points[-1].y)
             # print(self.points[-1].return_pts())
             # print()
     
+    def get_dist_types(self):
+        '''
+            Returns the list of implemented distance types
+        '''
+        return ["Euclidean","Manhattan","Minkowski","Supremum"]
+
     def set_centroids(self,**kwargs):
         '''
             INPUT:
@@ -100,7 +110,9 @@ class KMeans:
         self.cent_list = cent_list
         return cent_list
 
-
+    def set_p(self,p):
+        if self.dist_type == "Minkowski":
+            self.p = p
 
     def get_dist(self,point1,point2,**kwargs):
         '''
@@ -116,8 +128,64 @@ class KMeans:
             raise Exception("Use the function properly!")
 
 
-    def Kmeans_cluster():
-        pass
+    def _kmeans_cluster(self):
+        '''
+            INPUT: None (performs 1 iteration of K-Means on the given data)
+
+            OUTPUT:
+                - A tuple, whose first element is a list that contains the cluster number of each point in data
+                 and the second element is the list Point2D objects containing info. of new centroid points
+        '''
+        self.cluster = [0]*len(self.points)
+
+        for i in range(len(self.points)):
+            distances = list()
+            for j in range(len(self.centroids)):
+                distances.append(self.get_dist(self.points[i],self.centroids[j],p=self.p))
+            self.cluster[i] = distances.index(min(distances))
+        
+        # Finding new centroids
+        count = [0]*len(self.cent_list)
+        for i in range(len(self.cent_list)):
+            count[i] = self.cluster.count(i)
+
+
+        # Making a new temporary centroid element
+        temp_cent = list()
+        for i in range(len(self.centroids)):
+            temp_cent.append(Point2D(0.0,0.0))
+
+        for i in range(len(self.cluster)):
+            temp_cent[self.cluster[i]].x += (self.points[i].x/count[self.cluster[i]])
+            temp_cent[self.cluster[i]].y += (self.points[i].y/count[self.cluster[i]])
+            # print(self.cluster[i],self.points[i].x,temp_cent[0].x)
+        
+        # for i in temp_cent:
+        #     print(i.x,i.y)
+
+        self.centroids = temp_cent
+        del temp_cent, count
+
+        return (self.cluster,self.centroids)
+
+    def kmeans_iter(self):
+        '''
+            INPUT: None (Applies Kmeans_clustering over iteration on the provided data of a particular kmeans object)
+            
+            OUTPUT: 
+                - Performs K-means (by internally calling _kmeans_cluster) for
+                  a number of iterations until the data is clustered in the same class.
+                - Returns the clustering data once the data settles
+
+        '''
+        old_cluster, _ = self._kmeans_cluster()
+        while True:
+            new_cluster, _ = self._kmeans_cluster()
+            if new_cluster==old_cluster:
+                break
+            old_cluster = new_cluster
+        del old_cluster
+        return new_cluster
 
 '''
 
