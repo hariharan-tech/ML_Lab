@@ -41,6 +41,7 @@ for i in funcs_defined:
 
 # KMeans Class
 class KMeans:
+    dist_types_built = ["Euclidean","Manhattan","Minkowski","Supremum"]
     points = list()
     cluster = list()
     centroids = list()
@@ -62,6 +63,7 @@ class KMeans:
 
         '''
 
+        self.points = list()
         if dist_type not in funcs_defined or dist_type=="Cosine Similarity":
             raise Exception("Undefined distance function was specified")
         self.dist_type = dist_type
@@ -71,12 +73,6 @@ class KMeans:
             # print(self.points[-1].x,self.points[-1].y)
             # print(self.points[-1].return_pts())
             # print()
-    
-    def get_dist_types(self):
-        '''
-            Returns the list of implemented distance types
-        '''
-        return ["Euclidean","Manhattan","Minkowski","Supremum"]
 
     def set_centroids(self,**kwargs):
         '''
