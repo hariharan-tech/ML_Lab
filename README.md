@@ -11,8 +11,8 @@ A repository to store the programming files of Machine Learning Lab course.
 - Candidate elimination algorithm
 - Data visualization (getting started with matplotlib and seaborn)
 - Bivariate Guassian distribution visualization (animation gif)
-- K Means clustering (yet to come)
-- K Near Neighbours (yet to come)
+- K Means clustering (using CTypes module for distance calculations, available distances are: `['Euclidean', 'Manhattan', 'Minkowski', 'Supremum']`.
+- K Near Neighbours (update required)
 
 
 ## Bivariate Guassian distribution visualizations
@@ -25,3 +25,7 @@ A repository to store the programming files of Machine Learning Lab course.
 - Changing the Covariance matrix
 ![Shifting Covariance](https://github.com/hariharan-tech/ML_Lab/blob/master/05_data_viz/05b_guassian_distribution/shifting_covariance.gif)
 
+## K-Means clustering
+
+- Clustering example GIF
+![Clustering gif](https://github.com/hariharan-tech/ML_Lab/blob/master/06_kmeans/clustering_1.gif)
